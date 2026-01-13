@@ -1,0 +1,15 @@
+# Core Dependencies
+python-dotenv>=1.0.0
+pyyaml>=6.0.0
+
+# LLM Providers
+google-genai>=1.0.0
+requests>=2.31.0  # For Perplexity API
+
+# Search Providers
+exa-py>=1.0.0
+google-api-python-client>=2.100.0
+
+# Utilities
+rich>=13.0.0  # For beautiful CLI output
+click>=8.1.0  # For CLI interface

@@ -1,0 +1,71 @@
+# Tone Configuration for Different Media Types
+# Used to maintain consistent style across article generation
+
+media_types:
+  scientific_journal:
+    description: "Academic and scientific publications (Nature, Science, Cell)"
+    tone: "Formal, precise, evidence-based, objective"
+    style_guide:
+      - Use passive voice for methodology and processes
+      - Cite sources and data with precision
+      - Avoid personal pronouns (I, we, my) - use third person
+      - Technical terminology appropriate for the field
+      - Structured with clear sections: Abstract, Introduction, Methods, Results, Discussion
+      - Emphasize reproducibility and methodology
+      - Maintain objectivity and avoid hyperbole
+    example_phrases:
+      - "The research demonstrates..."
+      - "Findings indicate that..."
+      - "The study reveals..."
+      - "Evidence suggests..."
+    
+  research_magazine:
+    description: "Research-focused magazines (Scientific American, New Scientist, Quanta)"
+    tone: "Engaging but authoritative, accessible yet rigorous"
+    style_guide:
+      - Balance technical accuracy with readability
+      - Use active voice when possible for engagement
+      - Include context and real-world implications
+      - Narrative elements allowed to maintain interest
+      - Explain complex concepts clearly without oversimplifying
+      - Connect research to broader themes
+      - Use analogies and examples when helpful
+    example_phrases:
+      - "The breakthrough opens new possibilities..."
+      - "This discovery challenges our understanding of..."
+      - "Researchers have uncovered..."
+      - "The implications extend far beyond..."
+  
+  tech_news:
+    description: "Technology news outlets (TechCrunch, Wired, The Verge)"
+    tone: "Conversational, forward-looking, impact-focused"
+    style_guide:
+      - Emphasize innovation and real-world impact
+      - Use active voice throughout
+      - Include quotes and multiple perspectives when possible
+      - Focus on "what this means" for readers
+      - Accessible to general audience
+      - Highlight the "why it matters" angle
+      - Use present tense for immediacy
+    example_phrases:
+      - "The technology promises to..."
+      - "This innovation could transform..."
+      - "Developers are exploring..."
+      - "The system enables..."
+  
+  academic_news:
+    description: "Academic news (Inside Higher Ed, Chronicle of Higher Education)"
+    tone: "Professional, respectful, achievement-focused"
+    style_guide:
+      - Highlight contributions and impact on the field
+      - Formal but not overly technical
+      - Emphasize significance and recognition
+      - Include institutional context when relevant
+      - Respectful of academic tradition
+      - Acknowledge collaborators and institutions
+      - Focus on scholarly contributions
+    example_phrases:
+      - "The work contributes significantly to..."
+      - "This research advances our understanding of..."
+      - "The findings have been recognized for..."
+      - "The study represents a major step forward in..."

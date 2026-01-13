@@ -1,0 +1,139 @@
+# Article Structure Templates
+# Defines the structure and sections for different media types
+
+templates:
+  scientific_journal:
+    name: "Scientific Journal Article"
+    structure:
+      - section: "title"
+        description: "Clear, descriptive title (10-15 words)"
+        required: true
+      
+      - section: "abstract"
+        description: "Brief summary covering key points (150-200 words)"
+        required: true
+      
+      - section: "introduction"
+        description: "Context, background, and significance of the work"
+        required: true
+      
+      - section: "methodology"
+        description: "Approach, methods, and techniques used (if applicable)"
+        required: false
+      
+      - section: "results"
+        description: "Key findings, achievements, and outcomes"
+        required: true
+      
+      - section: "discussion"
+        description: "Implications, interpretation, and broader context"
+        required: true
+      
+      - section: "conclusion"
+        description: "Summary of significance and future directions"
+        required: true
+      
+      - section: "references"
+        description: "Sources and citations"
+        required: false
+  
+  research_magazine:
+    name: "Research Magazine Article"
+    structure:
+      - section: "headline"
+        description: "Engaging headline that captures the essence"
+        required: true
+      
+      - section: "subheadline"
+        description: "Supporting context or hook (optional)"
+        required: false
+      
+      - section: "lead"
+        description: "Compelling opening paragraph that hooks the reader"
+        required: true
+      
+      - section: "background"
+        description: "Context and setting - why this matters"
+        required: true
+      
+      - section: "discovery"
+        description: "Main achievement, finding, or breakthrough"
+        required: true
+      
+      - section: "impact"
+        description: "Why this matters and what it enables"
+        required: true
+      
+      - section: "future"
+        description: "What's next, future implications, or directions"
+        required: true
+      
+      - section: "sources"
+        description: "References and further reading"
+        required: false
+  
+  tech_news:
+    name: "Technology News Article"
+    structure:
+      - section: "headline"
+        description: "Attention-grabbing headline"
+        required: true
+      
+      - section: "subheadline"
+        description: "Supporting context or key detail"
+        required: false
+      
+      - section: "opening"
+        description: "Hook and immediate context"
+        required: true
+      
+      - section: "the_story"
+        description: "Main narrative - what happened, what was built"
+        required: true
+      
+      - section: "why_it_matters"
+        description: "Significance and impact"
+        required: true
+      
+      - section: "what_next"
+        description: "Future implications or next steps"
+        required: true
+      
+      - section: "sources"
+        description: "References and links"
+        required: false
+  
+  academic_news:
+    name: "Academic News Article"
+    structure:
+      - section: "headline"
+        description: "Professional headline highlighting achievement"
+        required: true
+      
+      - section: "lead"
+        description: "Opening that establishes significance"
+        required: true
+      
+      - section: "achievement"
+        description: "Main accomplishment or contribution"
+        required: true
+      
+      - section: "significance"
+        description: "Why this matters to the field"
+        required: true
+      
+      - section: "context"
+        description: "Background and institutional context"
+        required: true
+      
+      - section: "recognition"
+        description: "Awards, publications, or acknowledgments"
+        required: false
+      
+      - section: "future"
+        description: "Next steps or ongoing work"
+        required: false
+      
+      - section: "sources"
+        description: "References and links"
+        required: false
