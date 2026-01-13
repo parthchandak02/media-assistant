@@ -45,7 +45,9 @@ outputs/
 *.md
 !README.md
 !*.example.md
+# Allow original articles in article-no-sources, but ignore generated sources files
 !article-no-sources/*.md
+article-no-sources/*-sources.md
 
 # Cache
 .cache/
