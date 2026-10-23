@@ -1,214 +1,205 @@
-# Media Article Writer
+<div align="center">
 
-[![GitHub](https://img.shields.io/badge/GitHub-Repository-blue)](https://github.com/parthchandak02/media-assistant)
+<h1>Media Article Writer</h1>
 
-**Generate professional, research-backed articles in minutes.** AI agents research your topic, write in your chosen publication style, and format everything perfectly—ready for scientific journals, tech news sites, or research magazines.
+<p><b>Researched articles, in a publication's voice.</b></p>
 
-## Quick Start
+<p><i>Turning a piece of work into a news story means hours of finding sources, matching a house style and cutting the stiff phrasing. This hands that to a chain of agents.</i></p>
 
-**Prerequisites:** Python 3.10+ and [uv](https://github.com/astral-sh/uv#installation) package manager
+<h6>
+
+![Python](https://img.shields.io/badge/Python-3.10%2B-111111?style=flat-square&logo=python&logoColor=white)
+![LLM](https://img.shields.io/badge/LLM-Gemini%20%7C%20Perplexity-4285F4?style=flat-square)
+![Search](https://img.shields.io/badge/search-Exa%20%7C%20Google%20CSE-4285F4?style=flat-square)
+![CLI](https://img.shields.io/badge/CLI-Click%20%2B%20Rich-111111?style=flat-square)
+![Status](https://img.shields.io/badge/status-v0.1%20experiment-555555?style=flat-square)
+
+</h6>
+
+<a href="#how-it-works"><b>How it works</b></a> ·
+<a href="#features"><b>Features</b></a> ·
+<a href="#install"><b>Install</b></a> ·
+<a href="#usage"><b>Usage</b></a>
+
+<br><br>
+
+<img src="docs/assets/readme/cli.png" width="720" alt="Terminal running article-writer on a tech_news topic: a Generating Article panel, then check marks for found 10 sources, article written in 5 sections, refined, humanized, and a success panel with the output path">
+
+<sub>Real CLI output with the LLM and search providers swapped for local stubs, so no API was called. Demo topic.</sub>
+
+</div>
+
+<br>
+
+## Why
+
+Writing up a project for a magazine, a tech site or a journal is three jobs: research what
+else exists, write in that outlet's structure and tone, and then edit out the phrasing that
+sounds machine-made. Media Article Writer runs those as separate agents over one topic and
+saves a Markdown article with front matter and a deduplicated source list.
+
+## How it works
+
+<table>
+<tr>
+<td width="25%" valign="top">
+
+**1 · Research**
+
+The LLM turns the topic into search queries; the top three run against Exa or Google
+Custom Search, and results are deduplicated and summarised. Research is cached in
+`.cache/research/`.
+
+</td>
+<td width="25%" valign="top">
+
+**2 · Write**
+
+The writer fills the section template for the chosen media type
+(`src/config/templates.yaml`) in that outlet's tone (`src/config/tones.yaml`).
+
+</td>
+<td width="25%" valign="top">
+
+**3 · Edit**
+
+An editor pass checks flow, consistency and tone. If it fails, the draft goes through
+unchanged.
+
+</td>
+<td width="25%" valign="top">
+
+**4 · Humanize**
+
+One to three passes look for stock phrases ("It is important to note", "Moreover") and
+flat sentence rhythm, and rewrite them.
+
+</td>
+</tr>
+</table>
+
+Sources are then cleaned and formatted by an LLM pass, with a plain formatter as the fallback,
+and appended to the article.
+
+## Features
+
+- **Four publication styles.** `tech_news`, `research_magazine`, `scientific_journal` and
+  `academic_news`, each with its own section template and tone.
+- **Your context, not just the topic.** A short JSON file (or interactive prompts) describing
+  what is new, how it works and who it is for steers both the search queries and the draft.
+- **Find sources for an article you already wrote.** `--find-sources draft.md` extracts its
+  topics, researches each one and writes `draft-sources.md`.
+- **Research cache.** Re-running a topic reuses the search results; `--fresh-research`,
+  `--clear-cache` and `--clear-all-cache` control it.
+- **Swappable providers.** Gemini or Perplexity for text; Exa, Google Custom Search or CrewAI's
+  Exa tool for search, chosen in `config.yaml`.
+- **Three lengths.** Short (500-800 words), medium (1000-1500) or long (2000+).
+
+## Install
+
+Needs Python 3.10+, [uv](https://github.com/astral-sh/uv), one LLM key (Gemini or Perplexity)
+and one search key (Exa, or Google API key plus Custom Search engine ID).
 
 ```bash
-# 1. Clone and install
 git clone https://github.com/parthchandak02/media-assistant.git
 cd media-assistant
 uv sync
-
-# 2. Configure API keys
-cp .env.example .env
-# Edit .env and add your keys (see API Keys section below)
-
-# 3. Generate your first article
-uv run python -m src.main --topic "Your research topic" --media-type tech_news
+cp .env.example .env              # add your keys
+cp config.yaml.example config.yaml
 ```
 
-Your article will be saved in `outputs/` directory.
-
-## API Keys
-
-You need **one LLM provider** and **one search provider**:
-
-**LLM (choose one):**
-- `GEMINI_API_KEY` - [Get from Google AI Studio](https://aistudio.google.com/app/apikey)
-- `PERPLEXITY_API_KEY` - [Get from Perplexity](https://www.perplexity.ai/settings/api)
-
-**Search (choose one):**
-- `EXA_API_KEY` - [Get from Exa](https://dashboard.exa.ai/)
-- `GOOGLE_API_KEY` + `GOOGLE_CSE_ID` - [Get from Google Custom Search](https://developers.google.com/custom-search/v1/overview)
-
-## Usage Examples
+## Usage
 
 ```bash
-# Tech news style (TechCrunch, Wired)
-uv run python -m src.main --topic "New AI safety framework" --media-type tech_news
-
-# Research magazine style (Scientific American, Quanta)
-uv run python -m src.main --topic "Quantum computing breakthrough" --media-type research_magazine
-
-# Scientific journal style (Nature, Science)
-uv run python -m src.main --topic "Novel protein folding approach" --media-type scientific_journal --length long
+uv run article-writer --topic "New AI safety framework" --media-type tech_news             # interactive context questions
+uv run article-writer --topic "..." --media-type research_magazine --context-file ctx.json  # context from a file
+uv run article-writer --topic "..." --media-type scientific_journal --length long --no-interactive
+uv run article-writer --find-sources article-no-sources/sample.md                          # sources for an existing draft
+uv run article-writer --topic "..." --fresh-research -v                                    # skip the cache, show each step
 ```
 
-### With Context File (Better Results)
+Articles land in `outputs/` as `{date}_{topic}_{media_type}.md` unless you pass `--output`.
 
-Create `my_context.json`:
+<details>
+<summary><b>Context file</b></summary>
+
 ```json
 {
-  "novel_aspect": "What makes your approach unique",
-  "technology_details": "Technical details and methodology",
-  "problem_solved": "What problem does this solve",
-  "use_cases": "Specific examples or applications"
+  "novel_aspect": "What makes your approach new",
+  "technology_details": "How it works",
+  "problem_solved": "What problem it solves",
+  "use_cases": "Where it applies"
 }
 ```
 
-Then use it:
-```bash
-uv run python -m src.main --topic "Your topic" --media-type tech_news --context-file my_context.json
-```
+</details>
 
-## What You Get
+<details>
+<summary><b>Media types</b></summary>
 
-Articles are saved as markdown files in `outputs/` with:
-- **Metadata header** (YAML frontmatter with title, date, topic)
-- **Structured sections** (varies by media type)
-- **Source citations** (automatically found, deduplicated, and formatted)
+| Type | Modelled on | Sections |
+|---|---|---|
+| `tech_news` | TechCrunch, Wired, The Verge | headline, subheadline, opening, the story, why it matters, what next |
+| `research_magazine` | Scientific American, Quanta | headline, subheadline, lead, background, discovery, impact, future |
+| `scientific_journal` | Nature, Science, Cell | title, abstract, introduction, methodology, results, discussion, conclusion |
+| `academic_news` | Inside Higher Ed | headline, lead, achievement, significance, context, recognition, future |
 
-## Media Types
+Edit `src/config/templates.yaml` and `src/config/tones.yaml` to change them or add your own.
 
-| Type | Style | Best For |
-|------|-------|----------|
-| `tech_news` | TechCrunch, Wired, The Verge | Technology announcements, innovation stories |
-| `research_magazine` | Scientific American, Quanta | Popular science, research highlights |
-| `scientific_journal` | Nature, Science, Cell | Academic research articles |
-| `academic_news` | Inside Higher Ed | Academic achievements, institutional news |
+</details>
 
-## Configuration
+<details>
+<summary><b>Configuration (config.yaml)</b></summary>
 
-Copy `config.yaml.example` to `config.yaml` and adjust settings:
+| Key | Default | |
+|---|---|---|
+| `llm.provider` / `llm.model` | `gemini` / `gemini-2.5-flash` | or `perplexity` with `sonar-pro` / `sonar` |
+| `search.provider` | `exa` | `exa`, `google` or `crewai` (needs `crewai-tools`) |
+| `search.max_results` | `10` | sources kept per article |
+| `search.include_domains` | `[]` | restrict search, for example `["nature.com"]` |
+| `article.media_type` / `length` | `research_magazine` / `medium` | overridden by CLI flags |
+| `humanizer.enabled` / `passes` / `intensity` | `true` / `2` / `medium` | 1-3 passes; `low`, `medium`, `high` |
+| `output.directory` | `./outputs` | |
 
-```yaml
-llm:
-  provider: "gemini"  # or "perplexity"
-  model: "gemini-2.5-flash"
+API keys go in `.env`, never in `config.yaml`.
 
-search:
-  provider: "exa"  # or "google" or "crewai"
-  max_results: 10
+</details>
 
-article:
-  media_type: "research_magazine"
-  length: "medium"  # short, medium, or long
-```
+<details>
+<summary><b>All options</b></summary>
 
-Most users only need to set `llm.provider` and `search.provider` to match their API keys. Everything else works with defaults.
+| Option | |
+|---|---|
+| `--topic TEXT` | Topic to write about (required unless `--find-sources`) |
+| `--media-type` | `scientific_journal`, `research_magazine`, `tech_news`, `academic_news` |
+| `--length` | `short`, `medium`, `long` |
+| `--context-file PATH` | Load context from JSON instead of prompting |
+| `--interactive / --no-interactive` | Ask the context questions (default on) |
+| `--output PATH` | Output file (auto-named otherwise) |
+| `--config PATH` | Config file (default `config.yaml`) |
+| `--use-cache / --no-cache`, `--fresh-research` | Reuse or bypass cached research |
+| `--clear-cache`, `--clear-all-cache` | Drop cached research for one topic, or all |
+| `--find-sources PATH`, `--sources-output PATH` | Build a sources file for an existing article |
+| `-v, --verbose` | Show queries, sections and each pass |
 
-## All Options
+</details>
 
-```bash
-uv run python -m src.main [OPTIONS]
-
-Required:
-  --topic TEXT              Topic or achievement to write about
-
-Options:
-  --media-type TEXT         scientific_journal | research_magazine | 
-                            tech_news | academic_news
-  --length TEXT             short (500-800) | medium (1000-1500) | 
-                            long (2000+)
-  --context-file PATH       JSON file with your innovation details
-  --output PATH             Custom output file path
-  --verbose, -v             Show detailed progress
-  --config PATH             Custom config file (default: config.yaml)
-```
-
-## Troubleshooting
-
-**"Missing API keys" error**
-- Check `.env` file exists and has correct key names
-- Verify keys are valid (test them on provider websites)
-
-**"Config error"**
-- Make sure `config.yaml` exists (copy from `config.yaml.example`)
-- Check YAML syntax (no tabs, proper indentation)
-
-**"No results found"**
-- Try a different search provider in `config.yaml`
-- Check your search API key is valid
-- Verify API quota hasn't been exceeded
-
-**Article quality issues**
-- Use `--context-file` to provide more details about your innovation
-- Try different `media_type` for better style match
-- Use `--verbose` to see what's happening
-
-## How It Works
-
-The system uses a **4-agent pipeline**:
-
-1. **Research Agent** - Generates search queries and finds relevant sources
-2. **Writer Agent** - Generates article sections following your chosen style
-3. **Editor Agent** - Reviews for quality, consistency, and tone
-4. **Humanizer Agent** - Makes writing sound natural and human-authored
-
-## Advanced Usage
-
-### Customizing Tones and Templates
-
-Edit `src/config/tones.yaml` and `src/config/templates.yaml` to modify writing styles and article structures.
-
-### Using CrewAI Search
-
-```bash
-pip install crewai crewai-tools
-```
-
-Then set `search.provider: "crewai"` in `config.yaml`.
-
-## Project Structure
+<details>
+<summary><b>Project layout</b></summary>
 
 ```
-media-article-writer/
-├── src/
-│   ├── agents/           # Research, Writer, Editor, Humanizer agents
-│   ├── config/           # Tones and templates
-│   ├── utils/            # Helpers (LLM, search, formatting)
-│   ├── pipeline.py       # Main orchestrator
-│   └── main.py          # CLI entry point
-├── tests/                # Test suite
-├── outputs/             # Generated articles (gitignored)
-├── config.yaml.example  # Configuration template
-├── .env.example         # Environment variables template
-└── README.md            # This file
+src/main.py        CLI entry point (article-writer)
+src/pipeline.py    Orchestrates research, write, edit, humanize, sources
+src/agents/        Research, writer, editor, humanizer, sources formatter, topic extractor
+src/config/        Media-type tones and section templates
+src/utils/         LLM and search providers, cache, formatter, AI-phrase detection
+tests/             Unit, agent and integration tests (pytest)
 ```
 
-## FAQ
+</details>
 
-**Q: How long does it take to generate an article?**  
-A: Typically 1-3 minutes depending on search results and article length.
+<br>
 
-**Q: Can I edit the generated article?**  
-A: Yes! Articles are saved as markdown files you can edit in any text editor.
-
-**Q: Are sources automatically cited?**  
-A: Yes, sources are automatically found, deduplicated, cleaned, and formatted.
-
-**Q: How do I improve article quality?**  
-A: Use `--context-file` to provide detailed information about your innovation. The more context, the better the article.
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details (or check the repository).
-
----
-
-**Repository**: [https://github.com/parthchandak02/media-assistant](https://github.com/parthchandak02/media-assistant)
+<div align="center">
+<sub>Built with Click, Rich, the Gemini and Perplexity APIs, and Exa search.</sub>
+</div>
