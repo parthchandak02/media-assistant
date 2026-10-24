@@ -16,6 +16,7 @@ from .utils.config_loader import ConfigLoader, AppConfig
 from .utils.formatter import format_article, format_sources, generate_filename
 from .utils.validation import validate_topic, validate_media_type, validate_length, validate_max_results
 from .utils.exceptions import ValidationError, ConfigurationError
+from .utils.debug_log import debug_log
 
 
 class ArticlePipeline:
@@ -262,32 +263,14 @@ class ArticlePipeline:
                             })
                     
                     # Use Sources Formatter Agent for intelligent formatting
-                    # #region agent log
-                    import json, os
-                    try:
-                        log_path = "/Users/pchandak/Documents/media-article-writer/.cursor/debug.log"
-                        os.makedirs(os.path.dirname(log_path), exist_ok=True)
-                        with open(log_path, 'a') as f:
-                            f.write(json.dumps({"location":"pipeline.py:263","message":"before format_sources call","data":{"sources_count":len(sources_list),"article_length_before":len(article_markdown)},"timestamp":__import__('time').time(),"sessionId":"debug-session","runId":"run1","hypothesisId":"D,E"}) + "\n")
-                    except Exception as e:
-                        pass
-                    # #endregion
+                    debug_log(lambda: {"location":"pipeline.py:263","message":"before format_sources call","data":{"sources_count":len(sources_list),"article_length_before":len(article_markdown)},"sessionId":"debug-session","runId":"run1","hypothesisId":"D,E"})
                     
                     sources_markdown = self.sources_formatter_agent.format_sources(
                         sources_list,
                         verbose=verbose
                     )
                     
-                    # #region agent log
-                    import json, os
-                    try:
-                        log_path = "/Users/pchandak/Documents/media-article-writer/.cursor/debug.log"
-                        os.makedirs(os.path.dirname(log_path), exist_ok=True)
-                        with open(log_path, 'a') as f:
-                            f.write(json.dumps({"location":"pipeline.py:270","message":"after format_sources call","data":{"sources_markdown_length":len(sources_markdown) if sources_markdown else 0,"sources_markdown_preview":sources_markdown[:200] if sources_markdown else "","sources_markdown_end":sources_markdown[-300:] if sources_markdown and len(sources_markdown) > 300 else sources_markdown},"timestamp":__import__('time').time(),"sessionId":"debug-session","runId":"run1","hypothesisId":"D,E"}) + "\n")
-                    except Exception as e:
-                        pass
-                    # #endregion
+                    debug_log(lambda: {"location":"pipeline.py:270","message":"after format_sources call","data":{"sources_markdown_length":len(sources_markdown) if sources_markdown else 0,"sources_markdown_preview":sources_markdown[:200] if sources_markdown else "","sources_markdown_end":sources_markdown[-300:] if sources_markdown and len(sources_markdown) > 300 else sources_markdown},"sessionId":"debug-session","runId":"run1","hypothesisId":"D,E"})
                     
                     # Fallback to basic formatter if agent output is empty
                     if not sources_markdown or len(sources_markdown.strip()) < 50:
@@ -298,16 +281,7 @@ class ArticlePipeline:
                     if sources_markdown:
                         article_markdown += "\n\n" + sources_markdown
                     
-                    # #region agent log
-                    import json, os
-                    try:
-                        log_path = "/Users/pchandak/Documents/media-article-writer/.cursor/debug.log"
-                        os.makedirs(os.path.dirname(log_path), exist_ok=True)
-                        with open(log_path, 'a') as f:
-                            f.write(json.dumps({"location":"pipeline.py:278","message":"after appending sources","data":{"article_length_after":len(article_markdown),"article_end":article_markdown[-500:] if len(article_markdown) > 500 else article_markdown},"timestamp":__import__('time').time(),"sessionId":"debug-session","runId":"run1","hypothesisId":"D,E"}) + "\n")
-                    except Exception as e:
-                        pass
-                    # #endregion
+                    debug_log(lambda: {"location":"pipeline.py:278","message":"after appending sources","data":{"article_length_after":len(article_markdown),"article_end":article_markdown[-500:] if len(article_markdown) > 500 else article_markdown},"sessionId":"debug-session","runId":"run1","hypothesisId":"D,E"})
                     
                     progress.update(task, description="[green]Sources formatted")
                 except Exception as e:
@@ -374,31 +348,12 @@ class ArticlePipeline:
         file_path.parent.mkdir(parents=True, exist_ok=True)
         
         # Write file
-        # #region agent log
-        import json, os
-        try:
-            log_path = "/Users/pchandak/Documents/media-article-writer/.cursor/debug.log"
-            os.makedirs(os.path.dirname(log_path), exist_ok=True)
-            with open(log_path, 'a') as f:
-                f.write(json.dumps({"location":"pipeline.py:343","message":"before file write","data":{"file_path":str(file_path),"content_length":len(article_data['article_markdown']),"content_end":article_data['article_markdown'][-500:] if len(article_data['article_markdown']) > 500 else article_data['article_markdown']},"timestamp":__import__('time').time(),"sessionId":"debug-session","runId":"run1","hypothesisId":"D"}) + "\n")
-        except Exception as e:
-            pass
-        # #endregion
+        debug_log(lambda: {"location":"pipeline.py:343","message":"before file write","data":{"file_path":str(file_path),"content_length":len(article_data['article_markdown']),"content_end":article_data['article_markdown'][-500:] if len(article_data['article_markdown']) > 500 else article_data['article_markdown']},"sessionId":"debug-session","runId":"run1","hypothesisId":"D"})
         
         with open(file_path, 'w', encoding='utf-8') as f:
             f.write(article_data['article_markdown'])
         
-        # #region agent log
-        import json, os
-        try:
-            log_path = "/Users/pchandak/Documents/media-article-writer/.cursor/debug.log"
-            os.makedirs(os.path.dirname(log_path), exist_ok=True)
-            file_size = os.path.getsize(file_path)
-            with open(log_path, 'a') as f:
-                f.write(json.dumps({"location":"pipeline.py:348","message":"after file write","data":{"file_path":str(file_path),"file_size":file_size,"expected_size":len(article_data['article_markdown'].encode('utf-8'))},"timestamp":__import__('time').time(),"sessionId":"debug-session","runId":"run1","hypothesisId":"D"}) + "\n")
-        except Exception as e:
-            pass
-        # #endregion
+        debug_log(lambda: {"location":"pipeline.py:348","message":"after file write","data":{"file_path":str(file_path),"file_size":file_path.stat().st_size,"expected_size":len(article_data['article_markdown'].encode('utf-8'))},"sessionId":"debug-session","runId":"run1","hypothesisId":"D"})
         
         return str(file_path)
     

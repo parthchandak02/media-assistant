@@ -3,7 +3,7 @@ from typing import Dict, Any, Optional
 from ..utils.llm import LLMProvider
 from ..utils.config_loader import ConfigLoader
 from ..utils.ai_patterns import detect_ai_patterns, analyze_sentence_variation
-from ..utils.xml_parser import parse_xml_sections, validate_xml_structure, extract_headline_from_text
+from ..utils.xml_parser import parse_xml_sections, validate_xml_structure, extract_headline_from_text, match_section_name
 
 
 class HumanizerAgent:
@@ -446,20 +446,10 @@ Transform the article now, applying the focus area for pass {pass_num} while pre
                     
                     normalized_marker = section_name_line.lower().replace(' ', '_')
                     matched_section = None
-                    for section_name in section_names:
-                        if section_name.lower() == normalized_marker or \
-                           section_name.lower() in normalized_marker or \
-                           normalized_marker in section_name.lower():
-                            matched_section = section_name
-                            break
+                    matched_section = match_section_name(normalized_marker, section_names)
                     
                     if not matched_section:
-                        for section_name in original_sections:
-                            if section_name.lower() == normalized_marker or \
-                               section_name.lower() in normalized_marker or \
-                               normalized_marker in section_name.lower():
-                                matched_section = section_name
-                                break
+                        matched_section = match_section_name(normalized_marker, original_sections)
                     
                     if matched_section:
                         article_dict[matched_section] = section_content
@@ -486,20 +476,10 @@ Transform the article now, applying the focus area for pass {pass_num} while pre
                 normalized_header = header_text.lower().replace(' ', '_')
                 
                 current_section = None
-                for section_name in section_names:
-                    if section_name.lower() == normalized_header or \
-                       section_name.lower() in normalized_header or \
-                       normalized_header in section_name.lower():
-                        current_section = section_name
-                        break
+                current_section = match_section_name(normalized_header, section_names)
                 
                 if not current_section:
-                    for section_name in original_sections:
-                        if section_name.lower() == normalized_header or \
-                           section_name.lower() in normalized_header or \
-                           normalized_header in section_name.lower():
-                            current_section = section_name
-                            break
+                    current_section = match_section_name(normalized_header, original_sections)
                 
                 if not current_section:
                     current_section = normalized_header

@@ -9,6 +9,7 @@ from .config_loader import LLMConfig
 from .exceptions import GeminiAPIError, PerplexityAPIError
 from .logger import get_logger
 from .retry import retry_with_backoff
+from .debug_log import debug_log
 
 logger = get_logger(__name__)
 
@@ -95,18 +96,7 @@ class GeminiProvider(LLMProvider):
                 config=config
             )
             
-            # #region agent log
-            try:
-                import json, os
-                log_path = "/Users/pchandak/Documents/media-article-writer/.cursor/debug.log"
-                os.makedirs(os.path.dirname(log_path), exist_ok=True)
-                response_text = response.text if response.text else ""
-                actual_max_tokens = max_tokens if max_tokens is not None else self.config.max_tokens
-                with open(log_path, 'a') as f:
-                    f.write(json.dumps({"location":"llm.py:95","message":"LLM response received","data":{"response_length":len(response_text),"max_tokens":actual_max_tokens,"response_preview":response_text[:300] if response_text else "","response_end":response_text[-300:] if len(response_text) > 300 else response_text},"timestamp":__import__('time').time(),"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}) + "\n")
-            except Exception as e:
-                pass
-            # #endregion
+            debug_log(lambda: {"location":"llm.py:95","message":"LLM response received","data":{"response_length":len(response.text or ""),"max_tokens":max_tokens if max_tokens is not None else self.config.max_tokens,"response_preview":(response.text or "")[:300],"response_end":(response.text or "")[-300:]},"sessionId":"debug-session","runId":"run1","hypothesisId":"A"})
             
             if not response.text:
                 logger.warning("Gemini API returned empty response")

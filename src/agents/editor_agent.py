@@ -2,7 +2,7 @@
 from typing import Dict, Any
 from ..utils.llm import LLMProvider
 from ..utils.config_loader import ConfigLoader
-from ..utils.xml_parser import parse_xml_sections, validate_xml_structure, extract_headline_from_text
+from ..utils.xml_parser import parse_xml_sections, validate_xml_structure, extract_headline_from_text, match_section_name
 
 
 class EditorAgent:
@@ -272,12 +272,7 @@ Edit the entire article now, maintaining all sections but improving quality and 
                     
                     normalized_marker = section_name_line.lower().replace(' ', '_')
                     matched_section = None
-                    for section_name in section_names:
-                        if section_name.lower() == normalized_marker or \
-                           section_name.lower() in normalized_marker or \
-                           normalized_marker in section_name.lower():
-                            matched_section = section_name
-                            break
+                    matched_section = match_section_name(normalized_marker, section_names)
                     
                     if matched_section:
                         article_dict[matched_section] = section_content
@@ -301,15 +296,8 @@ Edit the entire article now, maintaining all sections but improving quality and 
                     article_dict[current_section] = '\n'.join(current_content).strip()
                 
                 header_text = line_stripped.replace('##', '').strip()
-                current_section = None
-                for section_name in section_names:
-                    normalized_header = header_text.lower().replace(' ', '_')
-                    if section_name.lower() == normalized_header or \
-                       section_name.lower() in normalized_header or \
-                       normalized_header in section_name.lower():
-                        current_section = section_name
-                        break
-                
+                current_section = match_section_name(header_text, section_names)
+
                 if not current_section:
                     current_section = header_text.lower().replace(' ', '_')
                 

@@ -161,7 +161,8 @@ Edit `src/config/templates.yaml` and `src/config/tones.yaml` to change them or a
 | `humanizer.enabled` / `passes` / `intensity` | `true` / `2` / `medium` | 1-3 passes; `low`, `medium`, `high` |
 | `output.directory` | `./outputs` | |
 
-API keys go in `.env`, never in `config.yaml`.
+API keys go in `.env`, never in `config.yaml`. To trace a run, set
+`MEDIA_ASSISTANT_DEBUG_LOG=debug.log` in `.env` and the pipeline appends JSON lines there; it is off by default.
 
 </details>
 
@@ -201,5 +202,5 @@ tests/             Unit, agent and integration tests (pytest)
 <br>
 
 <div align="center">
-<sub>Built with Click, Rich, the Gemini and Perplexity APIs, and Exa search.</sub>
+<sub>Built with Click, Rich, the Gemini and Perplexity APIs, and Exa search. MIT licensed.</sub>
 </div>

@@ -55,21 +55,11 @@ def parse_xml_sections(
         
         # Try to match to known section names
         matched_section = None
-        for section_name in section_names:
-            if section_name.lower() == normalized_name or \
-               section_name.lower() in normalized_name or \
-               normalized_name in section_name.lower():
-                matched_section = section_name
-                break
+        matched_section = match_section_name(normalized_name, section_names)
         
         # If no match and original_sections provided, try matching those
         if not matched_section and original_sections:
-            for section_name in original_sections:
-                if section_name.lower() == normalized_name or \
-                   section_name.lower() in normalized_name or \
-                   normalized_name in section_name.lower():
-                    matched_section = section_name
-                    break
+            matched_section = match_section_name(normalized_name, original_sections)
         
         if matched_section:
             article_dict[matched_section] = section_content
@@ -83,6 +73,27 @@ def parse_xml_sections(
         logger.debug(f"Parsed {len(parsed_sections)} sections using XML format: {parsed_sections}")
     
     return article_dict, parsed_sections
+
+
+def match_section_name(name: str, section_names: Optional[List[str]]) -> Optional[str]:
+    """Match a parsed section label to a template section name.
+
+    Exact matches win over partial ones, so "subheadline" never lands on "headline".
+    Partial matches (one name containing the other) prefer the longest template name.
+    """
+    if not name or not section_names:
+        return None
+    key = name.lower().replace(' ', '_')
+    for section_name in section_names:
+        if section_name.lower() == key:
+            return section_name
+    partial = [
+        section_name for section_name in section_names
+        if section_name.lower() in key or key in section_name.lower()
+    ]
+    if not partial:
+        return None
+    return max(partial, key=len)
 
 
 def validate_xml_structure(

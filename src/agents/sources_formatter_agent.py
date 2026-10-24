@@ -3,12 +3,10 @@ from typing import List, Dict, Any
 import json
 from ..utils.llm import LLMProvider
 from ..utils.logger import get_logger
+from ..utils.debug_log import debug_log
 
 logger = get_logger(__name__)
 
-# #region agent log
-DEBUG_LOG_PATH = "/Users/pchandak/Documents/media-article-writer/.cursor/debug.log"
-# #endregion
 
 
 class SourcesFormatterAgent:
@@ -36,15 +34,7 @@ class SourcesFormatterAgent:
         Returns:
             Formatted markdown string for sources section
         """
-        # #region agent log
-        try:
-            import os
-            os.makedirs(os.path.dirname(DEBUG_LOG_PATH), exist_ok=True)
-            with open(DEBUG_LOG_PATH, 'a') as f:
-                f.write(json.dumps({"location":"sources_formatter_agent.py:34","message":"format_sources entry","data":{"sources_count":len(sources) if sources else 0},"timestamp":__import__('time').time(),"sessionId":"debug-session","runId":"run1","hypothesisId":"A,B,C"}) + "\n")
-        except Exception as e:
-            logger.debug(f"Debug log write failed: {e}")
-        # #endregion
+        debug_log(lambda: {"location":"sources_formatter_agent.py:34","message":"format_sources entry","data":{"sources_count":len(sources) if sources else 0},"sessionId":"debug-session","runId":"run1","hypothesisId":"A,B,C"})
         
         if not sources:
             return ""
@@ -56,15 +46,7 @@ class SourcesFormatterAgent:
             # Build prompt for LLM to clean and format sources
             prompt = self._build_formatting_prompt(sources)
             
-            # #region agent log
-            try:
-                import os
-                os.makedirs(os.path.dirname(DEBUG_LOG_PATH), exist_ok=True)
-                with open(DEBUG_LOG_PATH, 'a') as f:
-                    f.write(json.dumps({"location":"sources_formatter_agent.py:52","message":"before LLM generate","data":{"prompt_length":len(prompt)},"timestamp":__import__('time').time(),"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}) + "\n")
-            except Exception as e:
-                logger.debug(f"Debug log write failed: {e}")
-            # #endregion
+            debug_log(lambda: {"location":"sources_formatter_agent.py:52","message":"before LLM generate","data":{"prompt_length":len(prompt)},"sessionId":"debug-session","runId":"run1","hypothesisId":"A"})
             
             # Get formatted sources from LLM
             # Use higher max_tokens for sources formatting (20 sources with descriptions need more tokens)
@@ -72,15 +54,7 @@ class SourcesFormatterAgent:
             # Use 10000 to ensure we have enough headroom
             formatted_output = self.llm_provider.generate(prompt, max_tokens=10000)
             
-            # #region agent log
-            try:
-                import os
-                os.makedirs(os.path.dirname(DEBUG_LOG_PATH), exist_ok=True)
-                with open(DEBUG_LOG_PATH, 'a') as f:
-                    f.write(json.dumps({"location":"sources_formatter_agent.py:56","message":"after LLM generate","data":{"output_length":len(formatted_output) if formatted_output else 0,"output_preview":formatted_output[:200] if formatted_output else "","output_end":formatted_output[-200:] if formatted_output and len(formatted_output) > 200 else ""},"timestamp":__import__('time').time(),"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}) + "\n")
-            except Exception as e:
-                logger.debug(f"Debug log write failed: {e}")
-            # #endregion
+            debug_log(lambda: {"location":"sources_formatter_agent.py:56","message":"after LLM generate","data":{"output_length":len(formatted_output) if formatted_output else 0,"output_preview":formatted_output[:200] if formatted_output else "","output_end":formatted_output[-200:] if formatted_output and len(formatted_output) > 200 else ""},"sessionId":"debug-session","runId":"run1","hypothesisId":"A"})
             
             # Validate LLM output
             if not formatted_output or not formatted_output.strip():
@@ -91,28 +65,12 @@ class SourcesFormatterAgent:
             # Parse and validate the output
             formatted_sources = self._parse_formatted_output(formatted_output, sources)
             
-            # #region agent log
-            try:
-                import os
-                os.makedirs(os.path.dirname(DEBUG_LOG_PATH), exist_ok=True)
-                with open(DEBUG_LOG_PATH, 'a') as f:
-                    f.write(json.dumps({"location":"sources_formatter_agent.py:66","message":"after parse_formatted_output","data":{"formatted_length":len(formatted_sources) if formatted_sources else 0,"formatted_preview":formatted_sources[:200] if formatted_sources else "","formatted_end":formatted_sources[-200:] if formatted_sources and len(formatted_sources) > 200 else ""},"timestamp":__import__('time').time(),"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}) + "\n")
-            except Exception as e:
-                logger.debug(f"Debug log write failed: {e}")
-            # #endregion
+            debug_log(lambda: {"location":"sources_formatter_agent.py:66","message":"after parse_formatted_output","data":{"formatted_length":len(formatted_sources) if formatted_sources else 0,"formatted_preview":formatted_sources[:200] if formatted_sources else "","formatted_end":formatted_sources[-200:] if formatted_sources and len(formatted_sources) > 200 else ""},"sessionId":"debug-session","runId":"run1","hypothesisId":"B"})
             
             return formatted_sources
             
         except Exception as e:
-            # #region agent log
-            try:
-                import os
-                os.makedirs(os.path.dirname(DEBUG_LOG_PATH), exist_ok=True)
-                with open(DEBUG_LOG_PATH, 'a') as f:
-                    f.write(json.dumps({"location":"sources_formatter_agent.py:72","message":"exception in format_sources","data":{"error":str(e)},"timestamp":__import__('time').time(),"sessionId":"debug-session","runId":"run1","hypothesisId":"C"}) + "\n")
-            except Exception as e2:
-                logger.debug(f"Debug log write failed: {e2}")
-            # #endregion
+            debug_log(lambda: {"location":"sources_formatter_agent.py:72","message":"exception in format_sources","data":{"error":str(e)},"sessionId":"debug-session","runId":"run1","hypothesisId":"C"})
             # Log error and fallback to basic formatter
             logger.warning(f"Sources formatting failed: {e}, using fallback")
             if verbose:
@@ -204,15 +162,7 @@ Format ALL sources following the example above with perfect consistency:
         Returns:
             Validated formatted sources markdown
         """
-        # #region agent log
-        try:
-            import os
-            os.makedirs(os.path.dirname(DEBUG_LOG_PATH), exist_ok=True)
-            with open(DEBUG_LOG_PATH, 'a') as f:
-                f.write(json.dumps({"location":"sources_formatter_agent.py:150","message":"_parse_formatted_output entry","data":{"input_length":len(formatted_output) if formatted_output else 0},"timestamp":__import__('time').time(),"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}) + "\n")
-        except Exception as e:
-            logger.debug(f"Debug log write failed: {e}")
-        # #endregion
+        debug_log(lambda: {"location":"sources_formatter_agent.py:150","message":"_parse_formatted_output entry","data":{"input_length":len(formatted_output) if formatted_output else 0},"sessionId":"debug-session","runId":"run1","hypothesisId":"B"})
         
         # Extract the sources section from LLM output
         lines = formatted_output.split('\n')
@@ -228,15 +178,7 @@ Format ALL sources following the example above with perfect consistency:
             # If no header found, assume entire output is sources
             sources_start = 0
         
-        # #region agent log
-        try:
-            import os
-            os.makedirs(os.path.dirname(DEBUG_LOG_PATH), exist_ok=True)
-            with open(DEBUG_LOG_PATH, 'a') as f:
-                f.write(json.dumps({"location":"sources_formatter_agent.py:168","message":"found sources_start","data":{"sources_start":sources_start,"total_lines":len(lines)},"timestamp":__import__('time').time(),"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}) + "\n")
-        except Exception as e:
-            logger.debug(f"Debug log write failed: {e}")
-        # #endregion
+        debug_log(lambda: {"location":"sources_formatter_agent.py:168","message":"found sources_start","data":{"sources_start":sources_start,"total_lines":len(lines)},"sessionId":"debug-session","runId":"run1","hypothesisId":"B"})
         
         # Extract sources section
         sources_lines = lines[sources_start:]
@@ -244,15 +186,7 @@ Format ALL sources following the example above with perfect consistency:
         # Clean up the output
         formatted = '\n'.join(sources_lines).strip()
         
-        # #region agent log
-        try:
-            import os
-            os.makedirs(os.path.dirname(DEBUG_LOG_PATH), exist_ok=True)
-            with open(DEBUG_LOG_PATH, 'a') as f:
-                f.write(json.dumps({"location":"sources_formatter_agent.py:175","message":"after extraction","data":{"formatted_length":len(formatted) if formatted else 0,"formatted_end":formatted[-300:] if formatted and len(formatted) > 300 else formatted},"timestamp":__import__('time').time(),"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}) + "\n")
-        except Exception as e:
-            logger.debug(f"Debug log write failed: {e}")
-        # #endregion
+        debug_log(lambda: {"location":"sources_formatter_agent.py:175","message":"after extraction","data":{"formatted_length":len(formatted) if formatted else 0,"formatted_end":formatted[-300:] if formatted and len(formatted) > 300 else formatted},"sessionId":"debug-session","runId":"run1","hypothesisId":"B"})
         
         # Basic validation: ensure we have at least some sources
         if not formatted or len(formatted) < 50:
@@ -264,15 +198,7 @@ Format ALL sources following the example above with perfect consistency:
         if not formatted.startswith('##'):
             formatted = "## Sources\n\n" + formatted
         
-        # #region agent log
-        try:
-            import os
-            os.makedirs(os.path.dirname(DEBUG_LOG_PATH), exist_ok=True)
-            with open(DEBUG_LOG_PATH, 'a') as f:
-                f.write(json.dumps({"location":"sources_formatter_agent.py:189","message":"_parse_formatted_output exit","data":{"final_length":len(formatted) if formatted else 0,"final_end":formatted[-300:] if formatted and len(formatted) > 300 else formatted},"timestamp":__import__('time').time(),"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}) + "\n")
-        except Exception as e:
-            logger.debug(f"Debug log write failed: {e}")
-        # #endregion
+        debug_log(lambda: {"location":"sources_formatter_agent.py:189","message":"_parse_formatted_output exit","data":{"final_length":len(formatted) if formatted else 0,"final_end":formatted[-300:] if formatted and len(formatted) > 300 else formatted},"sessionId":"debug-session","runId":"run1","hypothesisId":"B"})
         
         return formatted
     
