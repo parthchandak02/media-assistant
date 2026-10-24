@@ -8,7 +8,7 @@
 
 <h6>
 
-![Python](https://img.shields.io/badge/Python-3.10%2B-111111?style=flat-square&logo=python&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.11%2B-111111?style=flat-square&logo=python&logoColor=white)
 ![LLM](https://img.shields.io/badge/LLM-Gemini%20%7C%20Perplexity-4285F4?style=flat-square)
 ![Search](https://img.shields.io/badge/search-Exa%20%7C%20Google%20CSE-4285F4?style=flat-square)
 ![CLI](https://img.shields.io/badge/CLI-Click%20%2B%20Rich-111111?style=flat-square)
