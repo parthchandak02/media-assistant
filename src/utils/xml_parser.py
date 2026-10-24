@@ -84,8 +84,13 @@ def match_section_name(name: str, section_names: Optional[List[str]]) -> Optiona
     if not name or not section_names:
         return None
     key = name.lower().replace(' ', '_')
+    compact = re.sub(r'[\s_-]+', '', key)
     for section_name in section_names:
         if section_name.lower() == key:
+            return section_name
+    # "Sub Headline" / "sub-headline" are still the subheadline, not a partial headline match
+    for section_name in section_names:
+        if re.sub(r'[\s_-]+', '', section_name.lower()) == compact:
             return section_name
     partial = [
         section_name for section_name in section_names

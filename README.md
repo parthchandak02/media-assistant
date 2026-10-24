@@ -153,7 +153,7 @@ Edit `src/config/templates.yaml` and `src/config/tones.yaml` to change them or a
 
 | Key | Default | |
 |---|---|---|
-| `llm.provider` / `llm.model` | `gemini` / `gemini-2.5-flash` | or `perplexity` with `sonar-pro` / `sonar` |
+| `llm.provider` / `llm.model` | `gemini` / `gemini-3.8-flash` | or `perplexity` with `sonar-pro` / `sonar` |
 | `search.provider` | `exa` | `exa`, `google` or `crewai` (needs `crewai-tools`) |
 | `search.max_results` | `10` | sources kept per article |
 | `search.include_domains` | `[]` | restrict search, for example `["nature.com"]` |

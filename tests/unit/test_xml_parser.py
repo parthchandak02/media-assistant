@@ -22,3 +22,8 @@ def test_match_section_name_prefers_exact_then_longest():
     assert match_section_name("headline", SECTIONS) == "headline"
     assert match_section_name("background_context", SECTIONS) == "background"
     assert match_section_name("unknown", SECTIONS) is None
+
+
+def test_spaced_or_hyphenated_subheadline_is_still_subheadline():
+    for label in ("Sub Headline", "sub-headline", "SUB_HEADLINE"):
+        assert match_section_name(label, SECTIONS) == "subheadline"
