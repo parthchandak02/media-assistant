@@ -25,7 +25,7 @@ def test_research_successful_flow(mock_env_loader):
     ])
     
     agent = ResearchAgent(mock_search_provider, mock_llm_provider)
-    result = agent.research("test topic", max_results=5)
+    result = agent.research("test topic", max_results=5, use_cache=False)
     
     assert 'sources' in result
     assert 'key_findings' in result
@@ -76,7 +76,7 @@ def test_research_duplicate_removal(mock_env_loader):
     ])
     
     agent = ResearchAgent(mock_search_provider, mock_llm_provider)
-    result = agent.research("test topic", max_results=10)
+    result = agent.research("test topic", max_results=10, use_cache=False)
     
     # Should have only 2 unique URLs
     urls = [s.url for s in result['sources']]
@@ -92,7 +92,7 @@ def test_research_no_results(mock_env_loader):
     mock_llm_provider.generate = Mock(return_value="query 1")
     
     agent = ResearchAgent(mock_search_provider, mock_llm_provider)
-    result = agent.research("test topic", max_results=5)
+    result = agent.research("test topic", max_results=5, use_cache=False)
     
     assert result['sources'] == []
     assert "No relevant information found" in result['key_findings']

@@ -3,6 +3,7 @@ import pytest
 from unittest.mock import patch, Mock
 from click.testing import CliRunner
 from src.main import main
+from src.utils.env import EnvLoader
 
 
 @pytest.fixture
@@ -13,7 +14,8 @@ def cli_runner():
 
 def test_e2e_basic_article_generation(cli_runner, temp_config_file, temp_env_file):
     """Test basic CLI execution."""
-    with patch('src.main.ArticlePipeline') as mock_pipeline_class:
+    with patch('src.main.ArticlePipeline') as mock_pipeline_class, \
+         patch('src.main.EnvLoader', side_effect=lambda: EnvLoader(env_path=str(temp_env_file))):
         mock_pipeline = Mock()
         mock_pipeline.generate.return_value = {
             'metadata': {
@@ -27,10 +29,11 @@ def test_e2e_basic_article_generation(cli_runner, temp_config_file, temp_env_fil
         result = cli_runner.invoke(main, [
             '--topic', 'Test Topic',
             '--media-type', 'research_magazine',
-            '--config', str(temp_config_file)
+            '--config', str(temp_config_file),
+            '--no-interactive'
         ])
         
-        assert result.exit_code == 0
+        assert result.exit_code == 0, result.output
         assert 'Article Generated Successfully' in result.output
 
 

@@ -1,5 +1,6 @@
 """Integration tests for pipeline."""
 import pytest
+from pathlib import Path
 from unittest.mock import Mock, patch
 from src.pipeline import ArticlePipeline
 from src.utils.config_loader import ConfigLoader

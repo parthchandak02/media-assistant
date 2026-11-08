@@ -133,8 +133,8 @@ def test_format_article_for_humanization(mock_llm_provider, mock_config_loader, 
     
     formatted = agent._format_article_for_humanization(sample_article_dict)
     
-    assert '## Title' in formatted
-    assert '## Introduction' in formatted
+    assert '<headline>Test Article Title</headline>' in formatted
+    assert '<section name="introduction">' in formatted
     assert 'Test Article Title' in formatted
     assert 'test introduction' in formatted
 

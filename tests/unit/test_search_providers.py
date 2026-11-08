@@ -118,8 +118,8 @@ def test_google_search_with_domains(mock_env_loader):
         provider.search("test query")
         
         # Check that site: restriction was added to query
-        call_args = mock_list.call_args
-        assert 'site:example.com' in call_args[1]['q'] or 'site:example.com' in call_args[0][0]
+        query = mock_cse.list.call_args.kwargs['q']
+        assert query == 'test query (site:example.com)'
 
 
 def test_get_search_provider_exa(mock_env_loader):

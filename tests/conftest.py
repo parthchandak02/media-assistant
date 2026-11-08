@@ -6,7 +6,7 @@ from pathlib import Path
 from unittest.mock import Mock, MagicMock
 import yaml
 
-from src.utils.config_loader import AppConfig, LLMConfig, SearchConfig, ArticleConfig, OutputConfig
+from src.utils.config_loader import AppConfig, LLMConfig, SearchConfig, ArticleConfig, OutputConfig, HumanizerConfig
 from src.utils.env import EnvLoader
 from tests.fixtures.sample_data import (
     SAMPLE_CONFIG_DATA,
@@ -14,6 +14,22 @@ from tests.fixtures.sample_data import (
     SAMPLE_TEMPLATES_CONFIG
 )
 
+
+API_KEY_VARS = (
+    'GEMINI_API_KEY', 'PERPLEXITY_API_KEY', 'EXA_API_KEY',
+    'GOOGLE_API_KEY', 'GOOGLE_CSE_ID',
+)
+
+
+@pytest.fixture(autouse=True)
+def isolate_api_keys(monkeypatch):
+    """Start every test without API keys in os.environ.
+
+    EnvLoader calls load_dotenv, which writes into os.environ, so keys
+    loaded by one test would otherwise leak into the next.
+    """
+    for var in API_KEY_VARS:
+        monkeypatch.delenv(var, raising=False)
 
 @pytest.fixture
 def temp_config_file(tmp_path):
@@ -71,6 +87,11 @@ def mock_config():
             format='markdown',
             directory='./outputs',
             filename_template='{date}_{topic}_{media_type}.md'
+        ),
+        humanizer=HumanizerConfig(
+            enabled=True,
+            passes=2,
+            intensity='medium'
         )
     )
 

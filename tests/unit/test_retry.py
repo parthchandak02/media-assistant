@@ -1,6 +1,7 @@
 """Tests for retry logic."""
 import pytest
 import time
+import requests
 from unittest.mock import Mock, patch
 from src.utils.retry import retry_with_backoff
 
@@ -23,7 +24,7 @@ def test_retry_success_after_retries():
     def flaky_func():
         call_count[0] += 1
         if call_count[0] < 2:
-            raise Exception("Temporary failure")
+            raise requests.exceptions.ConnectionError("Temporary failure")
         return "success"
     
     with patch('time.sleep'):  # Speed up test
